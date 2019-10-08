@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="BackToFloorButton">
+        <t t-jquery=".table-name" t-operation="after">
+            <span class="table-name">
+                <t t-if="merged_tables and merged_tables.length > 0">
+                    <t t-foreach="merged_tables" t-as="merged_table">
+                        <t t-esc="merged_table.name" />
+                    </t>
+                </t>
+            </span>
+        </t>
+    </t>
+
+    <t t-extend="TableWidget">
+        <t t-jquery="[t-if='widget.order_count']" t-operation="after">
+            <t t-if="widget.table.parent_linked_table and !widget.table.is_parent">
+                <span class='order-table-merge'><t t-esc="widget.table.parent_linked_table.name"/></span>
+            </t>
+        </t>
+    </t>
+
+</templates>

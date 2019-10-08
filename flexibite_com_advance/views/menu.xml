@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="marketing_management_menu" name="Member" sequence="60"/>
+	    <record id="marketing_management_menu" model="ir.ui.menu">
+	        <field name="name">Member</field>
+	        <field name="nodoo_path">member</field>
+	        <field name="menu_type">menu</field>
+	        <field name="odoo_menu" eval="True"/>
+	        <field name="menu_show" eval="True"/>
+	    </record>
+
+    </data>
+</odoo>

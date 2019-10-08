@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <menuitem id="menu_pos_products_extend"
+        action="pos_product_extend.product_template_action_extend"
+        parent="point_of_sale.pos_config_menu_catalog"
+        sequence="100"/>
+
+</odoo>
