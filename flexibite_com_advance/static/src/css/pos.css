@@ -1588,6 +1588,7 @@ thead.bgcolorset tr td {
 
 .pos .pos-topheader {
 	height: 50px;
+	position: unset !important;
 }
 
 .pos .pos-branding {
@@ -5969,8 +5970,4 @@ end................................................
 	.pos .payment-numpad .payment_second_part {
 		max-width: 44%;
 	}
-}
-
-.pos .pos-topheader {
-	position: unset !important;
 }
