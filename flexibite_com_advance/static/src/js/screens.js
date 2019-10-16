@@ -3320,7 +3320,7 @@ odoo.define('flexibite_com_advance.screens', function (require) {
 				}
 				rpc.query(params, {async: false}).then(function(pos_order){
 					if(pos_order && pos_order[0]){
-						order.set_order_id(pos_order[0].id);
+						// order.set_order_id(pos_order[0].id);
 						order.set_pos_reference(self.pos.get_order().get_name());
 					}
 				});

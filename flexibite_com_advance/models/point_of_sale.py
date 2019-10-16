@@ -1335,6 +1335,7 @@ class pos_order(models.Model):
         res.update({
             'is_debit': ui_order.get('is_debit') or False,
             'is_delivery' : ui_order.get('is_delivery') or False,
+            'note': ui_order.get('note') or False,
             'lines': new_order_line,
             'customer_email': ui_order.get('customer_email'),
             # 'note': ui_order.get('order_note') or False,

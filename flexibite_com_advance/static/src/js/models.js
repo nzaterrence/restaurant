@@ -2900,6 +2900,7 @@ odoo.define('flexibite_com_advance.models', function (require) {
 				pos_normal_receipt_html: this.get_pos_normal_receipt_html() || '',
 				pos_xml_receipt_html: this.get_pos_xml_receipt_html() || '',
 				asst_cashier_id: this.asst_cashier_id || false,
+				note: this.get_order_note(),
             }
             console.log('new_vals ' + new_val);
             $.extend(orders, new_val);
