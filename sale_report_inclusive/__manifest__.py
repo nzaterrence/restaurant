@@ -7,7 +7,8 @@
     'sequence': 0,
     'depends': [
         'point_of_sale',
-        'hotel_reservation'
+        'hotel_reservation',
+        'hotel_advance_payment'
     ],
     'data': [
         'reports/pos_report.xml',
