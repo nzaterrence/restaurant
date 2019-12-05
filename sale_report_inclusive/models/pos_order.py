@@ -112,6 +112,8 @@ class ReportSaleDetailsInclusive(models.AbstractModel):
             'taxes': list(taxes.values()),
             'pos_debts': [{
                 'name': l.partner_id.name,
+                'date': l.date_order,
+                'ref': l.name,
                 'amount': l.amount_due
             } for l in draft_orders],
             'room_debts': sorted([{
@@ -123,7 +125,7 @@ class ReportSaleDetailsInclusive(models.AbstractModel):
             'reservation_total': sum(reservations.mapped('amount_total')),
             'reservation_total_paid': sum(reservations.mapped('amount_total')) - sum(reservations.mapped('amount_balance')),
             'pos_total_debts': sum(draft_orders.mapped('amount_due')),
-            'pos_total': sum(orders.mapped('amount_total')) - sum(draft_orders.mapped('amount_due')),
+            'pos_total': sum(orders.mapped('amount_total')),
             'reservations': reservations,
             'products': sorted([{
                 'product_id': product.id,
