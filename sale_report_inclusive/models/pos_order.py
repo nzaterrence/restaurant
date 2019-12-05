@@ -110,10 +110,10 @@ class ReportSaleDetailsInclusive(models.AbstractModel):
             'payments': payments,
             'company_name': self.env.user.company_id.name,
             'taxes': list(taxes.values()),
-            'pos_debts': sorted([{
+            'pos_debts': [{
                 'name': l.partner_id.name,
                 'amount': l.amount_due
-            } for l in draft_orders]),
+            } for l in draft_orders],
             'room_debts': sorted([{
                 'name': l.partner_id.name,
                 'reservation_no': l.reservation_no,
