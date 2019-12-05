@@ -1,0 +1,14 @@
+<odoo>
+    <record id="action_report_pos_details_inclusive" model="ir.actions.act_window">
+        <field name="name">Sales Details (Inclusive)</field>
+        <field name="res_model">pos.details.inclusive.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_report_order_details_inclusive"
+              name="Sales Details (Inclusive)"
+              action="action_report_pos_details_inclusive"
+              parent="point_of_sale.menu_point_rep"
+              sequence="5"/>
+</odoo>

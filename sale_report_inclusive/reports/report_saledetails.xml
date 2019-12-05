@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_saledetails_inclusive">
+    <t t-call="web.html_container">
+    <t t-call="web.internal_layout">
+        <div class="page">
+
+            <div class="text-center">
+                <h2>Sales Details</h2>
+
+                <strong><t t-esc="date_start" t-options="{'widget': 'datetime'}"/> - <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong>
+            </div>
+
+            <t t-set="product_category" t-value="[]"/>
+            <t t-foreach="products" t-as="l">
+                <t t-set="product_category" t-value="product_category+[l['category']]"/>
+            </t>
+
+            <!-- Orderlines -->
+            <h3>Products</h3>
+                <t t-foreach="set(product_category)" t-as="category">
+                    <div><strong t-esc="category.name"/></div>
+                    <table  class="table table-sm">
+                        <thead><tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price Unit</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr t-foreach='products' t-as='line'>
+                                <t t-if="category==line['category']">
+                                    <t t-set="internal_reference" t-value="line['code'] and '[%s] ' % line['code'] or ''" />
+                                    <td><t t-esc="internal_reference" /><t t-esc="line['product_name']" /></td>
+                                    <td>
+                                        <t t-esc="line['quantity']" />
+                                        <t t-if='line["uom"] != "Unit(s)"'>
+                                            <t t-esc='line["uom"]' />
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <t t-esc='line["price_unit"]' />
+                                    <t t-if='line["discount"] != 0'>
+                                        Disc: <t t-esc='line["discount"]' />%
+                                    </t>
+                                    </td>
+<!--                                    <td>-->
+<!--                                        <t t-esc='sum(line["total"])'/>-->
+<!--                                    </td>-->
+                                </t>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            <br/>
+
+            <h3>Payments</h3>
+            <table  class="table table-sm">
+                <thead><tr>
+                    <th>Name</th>
+                    <th>Currency</th>
+                    <th>Total</th>
+                </tr></thead>
+                <tbody>
+                <tr t-foreach='payments' t-as='payment'>
+                    <td><t t-esc="payment['name']" /></td>
+                    <td>KES</td>
+                    <td><t t-esc="payment['total']" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <br/>
+
+            <h3>Taxes</h3>
+            <table  class="table table-sm">
+                <thead><tr>
+                    <th>Name</th>
+                    <th>Tax Amount</th>
+                    <th>Base Amount</th>
+                </tr></thead>
+                <tbody>
+                <tr t-foreach='taxes' t-as='tax'>
+                    <td><t t-esc="tax['name']" /></td>
+                    <td><t t-esc="tax['tax_amount']" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                    <td><t t-esc="tax['base_amount']" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <br/>
+            <h3>Debts</h3>
+            <h5><b>POS Debts</b></h5>
+            <table  class="table table-sm">
+                <thead><tr>
+                    <th>Name</th>
+                    <th></th>
+                    <th>Amount</th>
+                </tr></thead>
+                <tbody>
+                    <tr t-foreach='pos_debts' t-as='debt'>
+                        <td><t t-esc="debt['name']" /></td>
+                        <td></td>
+                        <td><t t-esc="debt['amount']" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Total</b></td>
+                        <td></td>
+                        <td><t t-esc="pos_total_debts" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <h3><b>Sales Summary</b></h3>
+            <table  class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td><b>Total Sales:</b></td>
+                        <td><b><t t-esc='pos_total' t-options="{'widget': 'float', 'precision': currency_precision}"/></b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Total Received:</b></td>
+                        <td><b><t t-esc='total_paid' t-options="{'widget': 'float', 'precision': currency_precision}"/></b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Total Debts:</b></td>
+                        <td><b><t t-esc='pos_total_debts' t-options="{'widget': 'float', 'precision': currency_precision}"/></b></td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- ROOM REPORTS -->
+            <t t-if="show_reservations">
+                <br/>
+                <br/>
+                <div class="text-center" style="page-break-before: always;">
+                    <h2>Reservation Details</h2>
+                    <strong><t t-esc="date_start" t-options="{'widget': 'datetime'}"/> - <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong>
+                </div>
+                <table class="table table-condensed table-sm">
+                    <tr>
+                        <td>
+                            <strong>#No</strong>
+                        </td>
+                        <td>
+                            <strong>Guest Name</strong>
+                        </td>
+    <!--                    <td>-->
+    <!--                        <strong>New Guest</strong>-->
+    <!--                    </td>-->
+                        <td>
+                            <strong>Check-In Date</strong>
+                        </td>
+                        <td>
+                            <strong>Check-Out Date</strong>
+                        </td>
+    <!--                    <td>-->
+    <!--                        <strong>Room Details</strong>-->
+    <!--                    </td>-->
+                        <td>
+                            <strong>
+                                Status
+                            </strong>
+                        </td>
+                        <td>
+                            <strong>Amount Total</strong>
+                        </td>
+                    </tr>
+                    <t t-foreach="reservations"
+                       t-as="info">
+                        <t
+                                t-if="info.state!='draft' and info.state!='cancel'">
+                            <tr class="text-info">
+                                <td>
+                                    <span t-field="info.reservation_no"/>
+                                </td>
+                                <td>
+                                    <span t-field="info.partner_id.name"/>
+                                </td>
+    <!--                            <td>-->
+    <!--                                <span t-field="info.name"/>-->
+    <!--                            </td>-->
+                                <td>
+                                    <span t-field="info.checkin"/>
+                                </td>
+                                <td>
+                                    <span t-field="info.checkout"/>
+                                </td>
+    <!--                            <td>-->
+    <!--                                <table class="table-borderless"-->
+    <!--                                       t-foreach="info.reservation_line"-->
+    <!--                                       t-as="line">-->
+    <!--                                    <tr>-->
+    <!--                                        <td>-->
+    <!--                                            <span t-field="line.name"/>-->
+    <!--                                        </td>-->
+    <!--                                    </tr>-->
+    <!--                                    &lt;!&ndash; <tr t-foreach="line.reserve" t-as="o">-->
+    <!--                                        <td>-->
+    <!--                                            <span t-field="o.name" />-->
+    <!--                                        </td>-->
+    <!--                                    </tr> &ndash;&gt;-->
+    <!--                                </table>-->
+    <!--                            </td>-->
+                                <td>
+                                    <b>
+                                        <span t-field="info.state"/>
+                                    </b>
+                                </td>
+                                <td>
+                                    <span t-field="info.amount_total"/>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-if="info.state=='cancel'">
+                            <tr class="text-danger">
+                                <td>
+                                    <span t-field="info.reservation_no"/>
+                                </td>
+                                <td>
+                                    <span t-field="info.partner_id.name"/>
+                                </td>
+                                <td>
+                                    <span t-field="info.name"/>
+                                </td>
+                                <td>
+                                    <span t-field="info.checkin"/>
+                                </td>
+                                <td>
+                                    <span t-field="info.checkout"/>
+                                </td>
+                                <td>
+                                    <table class="table-borderless"
+                                           t-foreach="info.reservation_line"
+                                           t-as="line">
+                                        <tr>
+                                            <td>
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </tr>
+                                        <!-- <tr t-foreach="line.reserve" t-as="o">
+                                            <td>
+                                                <span t-field="o.name" />
+                                            </td>
+                                        </tr> -->
+                                    </table>
+                                </td>
+                                <td>
+                                    <b>
+                                        <span t-field="info.state"/>
+                                    </b>
+                                </td>
+                                <td>
+                                    <b>-</b>
+                                    <span
+                                            t-field="info.amount_total"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </t>
+                </table>
+                <table class="table table-condensed table-sm">
+                    <h4 class="text-center">Summary of Totals</h4>
+                    <tr>
+                        <th>
+                            <strong>Description</strong>
+                        </th>
+                        <th><strong>Number</strong></th>
+                        <th>
+                            <strong>Total</strong>
+                        </th>
+                    </tr>
+                    <tr class="text-warning">
+                        <td>Total of all New reservation</td>
+                        <td>
+                            <t t-esc="len([x.amount_total for x in reservations if x.state=='draft'])"/>
+                        </td>
+                        <td>
+                            <t t-esc="sum([x.amount_total for x in reservations if x.state=='draft'])"/>
+                        </td>
+                    </tr>
+                    <tr class="text-info">
+                        <td>Total of all confirmed reservation</td>
+                        <td>
+                            <t t-esc="len([x.amount_total for x in reservations if x.state=='confirm'])"/>
+                        </td>
+                        <td>
+                            <t t-esc="sum([x.amount_total for x in reservations if x.state=='confirm'])"/>
+                        </td>
+                    </tr>
+                    <tr class="text-success">
+                        <td>Total of all Done reservation</td>
+                        <td>
+                            <t t-esc="len([x.amount_total for x in reservations if x.state=='done'])"/>
+                        </td>
+                        <td>
+                            <t t-esc="sum([x.amount_total for x in reservations if x.state=='done'])"/>
+                        </td>
+                    </tr>
+                    <tr class="text-danger">
+                        <td>Total of all cancel reservation</td>
+                        <td>
+                            <t t-esc="len([x.amount_total for x in reservations if x.state=='cancel'])"/>
+                        </td>
+                        <td>
+                            <t t-esc="sum([x.amount_total for x in reservations if x.state=='cancel'])"/>
+                        </td>
+                    </tr>
+                    <tr class="text-primary">
+                        <td>Total of all Reservation</td>
+                        <td>
+                            <strong>
+                                <t t-esc="len([x.amount_total for x in reservations])"/>
+                            </strong>
+                        </td>
+                        <td>
+                            <strong>
+                                <t t-esc="sum([x.amount_total for x in reservations])"/>
+                            </strong>
+                        </td>
+                    </tr>
+                </table>
+
+                <h3>Debts</h3>
+                <h5><b>Unpaid Reservations</b></h5>
+                <table  class="table table-sm">
+                    <thead><tr>
+                        <th>Name</th>
+                        <th>Reservation</th>
+                        <th>Amount</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr t-foreach='room_debts' t-as='roomdebt'>
+                            <td><t t-esc="roomdebt['name']" /></td>
+                            <td><t t-esc="roomdebt['reservation_no']" /></td>
+                            <td><t t-esc="roomdebt['amount_balance']" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                        </tr>
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td></td>
+                            <td><t t-esc="room_total_debts" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3><b>Reservation Summary</b></h3>
+                <table  class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <td><b>Total Sales:</b></td>
+                            <td><b><t t-esc='reservation_total' t-options="{'widget': 'float', 'precision': currency_precision}"/></b></td>
+                        </tr>
+                        <tr>
+                            <td><b>Total Received:</b></td>
+                            <td><b><t t-esc='reservation_total_paid' t-options="{'widget': 'float', 'precision': currency_precision}"/></b></td>
+                        </tr>
+                        <tr>
+                            <td><b>Total Debts:</b></td>
+                            <td><b><t t-esc='room_total_debts' t-options="{'widget': 'float', 'precision': currency_precision}"/></b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+        </div>
+    </t>
+    </t>
+</template>
+</data>
+</openerp>
